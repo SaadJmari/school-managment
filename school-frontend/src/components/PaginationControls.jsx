@@ -1,12 +1,18 @@
-function PaginationControls({pagination, onPrevious, onNext}) {
-    if(!pagination) return null;
+import "./PaginationControls.css";
 
-    return (
-        <div style= {{marginTop: 16, display:"flex", gap: 8, alignItems: "center"}}>
-            <button onClick={onPrevious} disabled={!pagination.hasPrevious}>Previous</button>
-            <button onClick={onNext} disabled={!pagination.hasNext}>Next</button>
-        </div>
-    )
+function PaginationControls({ pagination, onPrevious, onNext }) {
+  if (!pagination) return null;
+
+  return (
+    <div className="pagination-controls">
+      <button onClick={onPrevious} disabled={!pagination.hasPrevious}>
+        Previous
+      </button>
+      <button onClick={onNext} disabled={!pagination.hasNext}>
+        Next
+      </button>
+    </div>
+  );
 }
 
-export default PaginationControls
+export default PaginationControls;

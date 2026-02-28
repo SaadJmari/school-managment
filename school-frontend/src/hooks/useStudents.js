@@ -7,6 +7,7 @@ export default function useStudents({page, limit}) {
     const [pagination, setPagination]= useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         //to preven errors when the user changes the pages fast
@@ -38,7 +39,9 @@ export default function useStudents({page, limit}) {
         return () => {
             cancelled = true;
         };
-    }, [page, limit]);
+    }, [page, limit, refreshKey]);
+
+    const refetch = () => setRefreshKey((k) => k+1);
         
-    return {students, pagination, loading, error};
+    return {students, pagination, loading, error, refetch};
 }
