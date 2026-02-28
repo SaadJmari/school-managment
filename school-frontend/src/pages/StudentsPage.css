@@ -1,0 +1,33 @@
+/* Page wrapper*/
+.students-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.students-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.students-page__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.students-page__pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+@media(max-width: 600px) {
+    .students-page {
+        padding: 1.5rem 1rem;
+    }
+}
