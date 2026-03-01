@@ -26,6 +26,13 @@
     margin-top: 1rem;
 }
 
+.students-page__form {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
 @media(max-width: 600px) {
     .students-page {
         padding: 1.5rem 1rem;
