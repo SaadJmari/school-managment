@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const initialForm = {
+const emptyForm = {
     firstName: "",
     lastName: "",
     grade: "",
@@ -9,9 +9,32 @@ const initialForm = {
     gender: "",
 };
 
-function StudentForm({onCreate, onCancel, submitting}) {
-    const [form, setForm] = useState(initialForm);
+function StudentForm({initialValues, onSubmit, onCancel, submitting, submitLabel = "Add"}) {
+    const [form, setForm] = useState(emptyForm);
     const [error, setError] = useState("");
+
+    useEffect(()=> {
+        const merged = { 
+            ...emptyForm, 
+            ...(initialValues
+                ? {
+                    firstName: initialValues.firstName,
+                    lastName: initialValues.lastName,
+                    grade: initialValues.grade,
+                    class: initialValues.class,
+                    birthday: initialValues.birthday,
+                    gender: initialValues.gender,
+                }
+            : {})
+            };
+
+        if(merged.birthday && typeof merged.birthday === "string") {
+            merged.birthday = merged.birthday.slice(0, 10);
+        }
+
+        setForm(merged);
+        setError("");
+    }, [initialValues]);
 
     function update(field) {
         return (e) => setForm((f) => ({ ...f, [field]: e.target.value}));
@@ -28,17 +51,21 @@ function StudentForm({onCreate, onCancel, submitting}) {
                 return;
             }
         }
+        const payload = {
+            firstName: form.firstName.trim(),
+            lastName: form.lastName.trim(),
+            grade: form.grade.trim(),
+            class: form.class.trim(),
+            birthday: form.birthday,
+            gender: form.gender.trim(),
+        };
 
         try {
-            await onCreate({
-                ...form,
-                firstName: form.firstName.trim(),
-                lastName: form.lastName.trim(),
-                grade: form.grade.trim(),
-                class: form.class.trim(),
-                gender: form.gender.trim(),
-            });
-            setForm(initialForm);
+            await onSubmit(payload);
+
+            //Only reset if in create mode (no initialValues)
+
+            if(!initialValues) setForm(emptyForm);
         } catch(err) {
             setError(err.message || "Something went wrong");
         }
@@ -90,7 +117,7 @@ function StudentForm({onCreate, onCancel, submitting}) {
 
             <div className="student-form__actions">
                 <button type="submit" disabled={submitting}>
-                {submitting ? "Adding…" : "Add"}
+                {submitting ? "Saving…" : submitLabel}
                 </button>
                 <button type="button" onClick={onCancel} disabled={submitting}>
                 Cancel

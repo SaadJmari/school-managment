@@ -3,7 +3,7 @@ import useStudents from "../hooks/useStudents";
 import StudentsList from "../components/StudentsList";
 import PaginationControls from "../components/PaginationControls";
 import StudentForm from "../components/StudentForm";
-import { deleteStudent, createStudent } from "../api/students";
+import { deleteStudent, createStudent, updateStudent } from "../api/students";
 import "./StudentsPage.css";
 
 function StudentsPage() {
@@ -11,25 +11,35 @@ function StudentsPage() {
   const limit = 10;
 
   const [showForm, setShowForm] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const { students, pagination, loading, error, refetch } = useStudents({ page, limit });
 
-  async function handleCreate(payload) {
-    setCreating(true);
+  async function handleSubmit(payload) {
+    setSubmitting(true);
     try {
+      if(editingStudent) {
+        await updateStudent(editingStudent._id, payload);
+        setShowForm(false);
+        setEditingStudent(null);
+        refetch();
+        return;
+      }
+
+      //create mode
       await createStudent(payload);
 
       // show the new student immediately
       setShowForm(false);
 
       if (page !== 1) {
-        setPage(1); // triggers fetch
+        setPage(1);
       } else {
-        refetch(); // same page → force reload
+        refetch();
       }
     } finally {
-      setCreating(false);
+      setSubmitting(false);
     }
   }
 
@@ -51,6 +61,17 @@ function StudentsPage() {
     }
   }
 
+  function handleToggleForm() {
+    if(!showForm) {
+      setEditingStudent(null);
+      setShowForm(true);
+      return;
+    }
+
+    setShowForm(false);
+    setEditingStudent(null);
+  }
+
   if (loading) return <p>Loading…</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -59,7 +80,7 @@ function StudentsPage() {
       <div className="students-page__header">
         <h2>Students</h2>
 
-        <button type="button" onClick={() => setShowForm((s) => !s)}>
+        <button type="button" onClick={handleToggleForm}>
           {showForm ? "Close" : "Add student"}
         </button>
       </div>
@@ -67,15 +88,26 @@ function StudentsPage() {
       {showForm && (
         <div className="students-page__form">
           <StudentForm
-            onCreate={handleCreate}
-            onCancel={() => setShowForm(false)}
-            submitting={creating}
+            initialValues={editingStudent}
+            onSubmit={handleSubmit}
+            onCancel={() => {
+              setShowForm(false);
+              setEditingStudent(null);
+            }}
+            submitting={submitting}
+            submitLabel={editingStudent ? "Save" : "Add"}
           />
         </div>
       )}
 
       <div className="students-page__list">
-        <StudentsList students={students} onDelete={handleDelete} onEdit={(s) => console.log(s)} />
+        <StudentsList 
+            students={students} 
+            onDelete={handleDelete} 
+            onEdit={(student) => {
+            setEditingStudent(student);
+            setShowForm(true);
+          }} />
       </div>
 
       <div className="students-page__pagination">
