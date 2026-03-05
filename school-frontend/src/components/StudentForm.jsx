@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./StudentForm.css";
 
 const emptyForm = {
     firstName: "",

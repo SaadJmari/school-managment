@@ -1,0 +1,12 @@
+{
+  "name": "school-management",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c auto \"npm --prefix school-backend run dev\" \"npm --prefix school-frontend run dev\"",
+    "dev:backend": "npm --prefix school-backend run dev",
+    "dev:frontend": "npm --prefix school-frontend run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

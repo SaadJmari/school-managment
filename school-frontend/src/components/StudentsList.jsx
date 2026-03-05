@@ -1,7 +1,7 @@
 import formatDate from "../utils/formatDate";
 import "./StudentsList.css";
 
-function StudentsList({ students, onDelete, onEdit }) {
+function StudentsList({ students, onView, onDelete, onEdit, deletingId }) {
   if (!students || students.length === 0) {
     return <p>No students found</p>;
   }
@@ -19,7 +19,9 @@ function StudentsList({ students, onDelete, onEdit }) {
       </thead>
 
       <tbody>
-        {students.map((s) => (
+        {students.map((s) => {
+          const isDeleting = deletingId === s._id;
+          return (
           <tr key={s._id}>
             <td className="students-table__name">
               {s.firstName} {s.lastName}
@@ -30,8 +32,17 @@ function StudentsList({ students, onDelete, onEdit }) {
             <td className="students-table__actions">
               <button
                 type="button"
+                onClick={() => onView?.(s._id)}
+                className="students-table__btn"
+                disabled={isDeleting}
+              >
+                View
+              </button>
+              <button
+                type="button"
                 onClick={() => onEdit?.(s)}
                 className="students-table__btn"
+                disabled={isDeleting}
               >
                 Edit
               </button>
@@ -39,12 +50,14 @@ function StudentsList({ students, onDelete, onEdit }) {
                 type="button"
                 onClick={() => onDelete?.(s._id)}
                 className="students-table__btn students-table__btn--danger"
+                disabled={isDeleting}
               >
-                Delete
+                {isDeleting ? "Deleting...":"Delete"}
               </button>
             </td>
           </tr>
-        ))}
+          );
+        })}
       </tbody>
     </table>
   );

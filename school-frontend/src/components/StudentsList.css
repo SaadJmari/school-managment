@@ -4,34 +4,36 @@
     background: transparent;
 }
 
-.students-table th, .students-table td {
+.students-table th,
+.students-table td {
     text-align: left;
-    padding: 0.75rem 1rem;
+    padding: 0.9rem 1rem;
 }
 
 .students-table thead {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .students-table th {
     font-weight: 600;
-    opacity: 0.85;
+    color: #374151;
 }
 
 .students-table tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.students-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.04);
-} 
+.students-table tbody tr:nth-child(even) {
+    background: #f9f5fb;
+}
 
 .students-table__name {
     font-weight: 600;
+    color: #111827;
 }
 
 .students-table__muted {
-    opacity: 0.85;
+    color: #6b7280;
 }
 
 .students-table__actions-col {
@@ -42,28 +44,50 @@
 .students-table__actions {
     display: flex;
     gap: 0.5rem;
-    justify-content: flex-end;
+    justify-content: flex-start;
     white-space: nowrap;
 }
 
 .students-table__btn {
-    padding: 0.35rem 0.6rem;
+    padding: 0.45rem 0.75rem;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #1f2937;
     cursor: pointer;
+    font-size: 0.9rem;
 }
 
 .students-table__btn:hover {
-    background: rgba(255, 255, 255, 0.01);
+    background: #f9fafb;
+}
+
+.students-table__btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .students-table__btn--danger {
-    border-color: rgba(255, 100, 100, 0.35);
+    border-color: #f5c2c7;
+    color: #b42318;
 }
 
-@media(max-width:600px) {
-    .students-table th, .students-table td {
+.students-table__btn--danger:hover {
+    background: #fff1f2;
+}
+
+@media (max-width: 600px) {
+
+    .students-table th,
+    .students-table td {
         padding: 0.6rem 0.75rem;
+    }
+
+    .students-table__actions {
+        gap: 0.35rem;
+    }
+
+    .students-table__btn {
+        padding: 0.35rem 0.6rem;
     }
 }

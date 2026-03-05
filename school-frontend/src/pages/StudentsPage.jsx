@@ -1,20 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useStudents from "../hooks/useStudents";
 import StudentsList from "../components/StudentsList";
 import PaginationControls from "../components/PaginationControls";
 import StudentForm from "../components/StudentForm";
-import { deleteStudent, createStudent, updateStudent } from "../api/students";
+import { createStudent, updateStudent } from "../api/students";
+import useDeleteStudent from "../hooks/useDeleteStudent";
 import "./StudentsPage.css";
 
 function StudentsPage() {
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
   const limit = 10;
 
   const [showForm, setShowForm] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const { students, pagination, loading, error, refetch } = useStudents({ page, limit });
+  const { remove, loading: deleting, error: deleteError} = useDeleteStudent();
+
+  function handleView(id) {
+    navigate(`/students/${id}`);
+  }
 
   async function handleSubmit(payload) {
     setSubmitting(true);
@@ -48,7 +57,7 @@ function StudentsPage() {
     if (!ok) return;
 
     try {
-      await deleteStudent(id);
+      await remove(id);
 
       if (students.length === 1 && page > 1) {
         setPage((p) => p - 1);
@@ -56,8 +65,10 @@ function StudentsPage() {
       }
 
       refetch();
-    } catch (err) {
-      alert(err.message);
+    } catch {
+      // Hook already sets deleteError
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -85,6 +96,8 @@ function StudentsPage() {
         </button>
       </div>
 
+      {deleteError && <p className="students-page__error">Delete failed: {deleteError}</p>}
+
       {showForm && (
         <div className="students-page__form">
           <StudentForm
@@ -103,11 +116,14 @@ function StudentsPage() {
       <div className="students-page__list">
         <StudentsList 
             students={students} 
+            onView={handleView}
             onDelete={handleDelete} 
             onEdit={(student) => {
             setEditingStudent(student);
             setShowForm(true);
-          }} />
+          }} 
+          deletingId={deletingId}
+          />
       </div>
 
       <div className="students-page__pagination">
