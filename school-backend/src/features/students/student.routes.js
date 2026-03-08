@@ -5,7 +5,8 @@ const {
     createStudent,
     deleteStudent,
     updateStudent,
-    updateStudentPatch } = require("./student.controller.js");
+    updateStudentPatch,
+    getStudentFilterOptions } = require("./student.controller.js");
 const validateObjectId = require("../../middleware/validateObjectId.js");
 const validateBody = require("../../middleware/validateBody.js");
 const asyncHandler = require("../../utils/asyncHandler.js")
@@ -16,6 +17,9 @@ const studentFields = ["firstName", "lastName", "grade", "class", "birthday", "g
 
 //POST /students
 router.post('/', asyncHandler(createStudent));
+
+//Filter options
+router.get("/filter-options", asyncHandler(getStudentFilterOptions));
 
 //GET /students
 router.get('/', asyncHandler(getStudents));

@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 
 const API_URL = "http://localhost:5000";
 
-export default function useStudents({page, limit}) {
+export default function useStudents({page, limit, q, grade, className, gender}) {
     const [students, setStudents] = useState([]);
     const [pagination, setPagination]= useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [refreshKey, setRefreshKey] = useState(0);
+
+
 
     useEffect(() => {
         //to preven errors when the user changes the pages fast
@@ -18,7 +20,26 @@ export default function useStudents({page, limit}) {
                 setLoading(true);
                 setError("");
 
-                const res = await fetch(`${API_URL}/students?page=${page}&limit=${limit}`);
+                const params = new URLSearchParams();
+                params.set("page", String(page));
+                params.set("limit", String(limit));
+                if(q) {
+                    params.set('q', q);
+                }
+
+                if(grade) {
+                    params.set("grade", grade);
+                }
+
+                if(className) {
+                    params.set("class", className);
+                }
+
+                if(gender) {
+                    params.set("gender", gender);
+                }
+
+                const res = await fetch(`${API_URL}/students?${params.toString()}`);
                 if(!res.ok) throw new Error(`Request failed: ${res.status}`);
 
                 const data = await res.json();
@@ -39,7 +60,7 @@ export default function useStudents({page, limit}) {
         return () => {
             cancelled = true;
         };
-    }, [page, limit, refreshKey]);
+    }, [page, limit, q, grade, className, gender, refreshKey]);
 
     const refetch = () => setRefreshKey((k) => k+1);
         

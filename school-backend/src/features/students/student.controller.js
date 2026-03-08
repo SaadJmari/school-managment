@@ -22,10 +22,42 @@ async function getStudents(req, res) {
     //How many documents should MongoDB skip
     const skip = limit * (page - 1);
 
+    //To support request
+    const {
+        q,
+        grade,
+        class: className,
+        gender
+    } = req.query;
+
+    const query = {};
+
+    if (q) {
+        query.$or = [{
+                firstName: new RegExp(q, "i")
+            },
+            {
+                lastName: new RegExp(q, "i")
+            }
+        ];
+    }
+
+    if (grade) {
+        query.grade = grade;
+    }
+
+    if (className) {
+        query.class = className;
+    }
+
+    if (gender) {
+        query.gender = gender;
+    }
+
     //Run both queries in parallel
     const [students, totalStudents] = await Promise.all([
-        Student.find().skip(skip).limit(limit),
-        Student.countDocuments(),
+        Student.find(query).sort({ lastName: 1, firstName: 1}).skip(skip).limit(limit),
+        Student.countDocuments(query),
     ]);
 
     const totalPages = Math.max(1, Math.ceil(totalStudents / limit));
@@ -137,7 +169,20 @@ async function updateStudentPatch(req, res) {
     }
     return res.status(200).json(updatedStudent);
 
+}
 
+async function getStudentFilterOptions(req, res) {
+  const [grades, classes, genders] = await Promise.all([
+    Student.distinct("grade"),
+    Student.distinct("class"),
+    Student.distinct("gender"),
+  ]);
+
+  return res.json({
+    grades: grades.sort((a,b) => Number(a) - Number(b)),
+    classes: classes.sort(),
+    genders: genders.sort(),
+  });
 }
 
 module.exports = {
@@ -146,5 +191,6 @@ module.exports = {
     createStudent,
     deleteStudent,
     updateStudent,
-    updateStudentPatch
+    updateStudentPatch,
+    getStudentFilterOptions
 }

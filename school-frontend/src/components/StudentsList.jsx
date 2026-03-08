@@ -14,6 +14,7 @@ function StudentsList({ students, onView, onDelete, onEdit, deletingId }) {
           <th>Birthday</th>
           <th>Grade</th>
           <th>Class</th>
+          <th>Gender</th>
           <th className="students-table__actions-col">Actions</th>
         </tr>
       </thead>
@@ -29,6 +30,7 @@ function StudentsList({ students, onView, onDelete, onEdit, deletingId }) {
             <td className="students-table__muted">{formatDate(s.birthday)}</td>
             <td className="students-table__muted">{s.grade}</td>
             <td className="students-table__muted">{s.class}</td>
+            <td className="students-table__muted">{s.gender}</td>
             <td className="students-table__actions">
               <button
                 type="button"
