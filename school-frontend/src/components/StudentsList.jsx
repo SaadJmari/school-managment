@@ -1,20 +1,26 @@
 import formatDate from "../utils/formatDate";
 import "./StudentsList.css";
 
-function StudentsList({ students, onView, onDelete, onEdit, deletingId }) {
+function StudentsList({ students, sort, order, onSort, onView, onDelete, onEdit, deletingId }) {
   if (!students || students.length === 0) {
     return <p>No students found</p>;
+  }
+
+  function getSortIndicator(column) {
+    if(sort !== column) return "";
+    return order === "asc" ? " ▲" : " ▼";
   }
 
   return (
     <table className="students-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Birthday</th>
-          <th>Grade</th>
-          <th>Class</th>
-          <th>Gender</th>
+          <th onClick={() => onSort("firstName")}>First Name{getSortIndicator("firstName")}</th>
+          <th onClick={() => onSort("lastName")}>Last Name{getSortIndicator("lastName")}</th>
+          <th onClick={() => onSort("birthday")}>Birthday{getSortIndicator("birthday")}</th>
+          <th onClick={() => onSort("grade")}>Grade{getSortIndicator("grade")}</th>
+          <th onClick={() => onSort("class")}>Class{getSortIndicator("class")}</th>
+          <th onClick={() => onSort("gender")}>Gender{getSortIndicator("gender")}</th>
           <th className="students-table__actions-col">Actions</th>
         </tr>
       </thead>
@@ -25,8 +31,9 @@ function StudentsList({ students, onView, onDelete, onEdit, deletingId }) {
           return (
           <tr key={s._id}>
             <td className="students-table__name">
-              {s.firstName} {s.lastName}
+              {s.firstName}
             </td>
+            <td className="students-table__name">{s.lastName}</td>
             <td className="students-table__muted">{formatDate(s.birthday)}</td>
             <td className="students-table__muted">{s.grade}</td>
             <td className="students-table__muted">{s.class}</td>

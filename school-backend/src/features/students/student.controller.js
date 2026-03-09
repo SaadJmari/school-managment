@@ -4,7 +4,7 @@ async function getStudents(req, res) {
 
     const MAX_LIMIT = 50;
 
-    //req.query values are strings
+    //Turn req.query values to numbers
     let page = Number.parseInt(req.query.page, 10);
     let limit = Number.parseInt(req.query.limit, 10);
 
@@ -22,7 +22,7 @@ async function getStudents(req, res) {
     //How many documents should MongoDB skip
     const skip = limit * (page - 1);
 
-    //To support request
+    //Read filter values from query params
     const {
         q,
         grade,
@@ -54,11 +54,41 @@ async function getStudents(req, res) {
         query.gender = gender;
     }
 
-    //Run both queries in parallel
-    const [students, totalStudents] = await Promise.all([
-        Student.find(query).sort({ lastName: 1, firstName: 1}).skip(skip).limit(limit),
-        Student.countDocuments(query),
-    ]);
+    //Sort logic
+    const allowedSortFields = ["firstName", "lastName", "grade", "class", "birthday", "gender"];
+    const { sort = "lastName", order = "asc"} = req.query;
+    const sortObj = {};
+    const sortField = allowedSortFields.includes(sort) ? sort : "lastName";
+    const sortDirection = order === "desc" ? -1 : 1;
+    sortObj[sortField] = sortDirection;
+    
+    if(sortField !== "lastName") {
+        sortObj.lastName = 1;
+    }
+
+    if(sortField !== "firstName") {
+        sortObj.firstName = 1;
+    }
+
+    let students;
+
+    if(sortField === "grade") {
+        students = await Student.aggregate([
+            { $match: query },
+            { $addFields: { gradeNumber: { $toInt: "$grade" } } },
+            { $sort: {
+                gradeNumber: sortDirection,
+                lastName: 1,
+                firstName: 1
+            } },
+            { $skip: skip},
+            { $limit: limit}
+        ])
+    } else {
+        students = await Student.find(query).sort(sortObj).skip(skip).limit(limit);
+    }
+
+    const totalStudents = await Student.countDocuments(query);
 
     const totalPages = Math.max(1, Math.ceil(totalStudents / limit));
 

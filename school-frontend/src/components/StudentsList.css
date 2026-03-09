@@ -17,6 +17,11 @@
 .students-table th {
     font-weight: 600;
     color: #374151;
+    cursor: pointer;
+}
+
+.students-table th:hover {
+    background-color: #f5f5f5;
 }
 
 .students-table tbody tr {

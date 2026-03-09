@@ -27,7 +27,9 @@ function StudentsPage() {
   const className = searchParams.get("class") || "";
   const gender = searchParams.get("gender") || "";
   const debouncedQ = useDebounce(q, 300);
-  const { students, pagination, loading, error, refetch } = useStudents({ page, limit, q: debouncedQ, grade, className, gender });
+  const sort = searchParams.get("sort") || "lastName";
+  const order = searchParams.get("order") || "asc";
+  const { students, pagination, loading, error, refetch } = useStudents({ page, limit, q: debouncedQ, grade, className, gender, sort, order });
   const { remove,  error: deleteError} = useDeleteStudent();
   const { grades, classes, genders, loading: filterLoading, error: filterError} = useStudentFilterOptions();
 
@@ -108,6 +110,19 @@ function StudentsPage() {
     setEditingStudent(null);
   }
 
+  function handleSort(column) {
+    const nextParams = new URLSearchParams(searchParams);
+
+    if(column !==  sort) {
+      nextParams.set("sort", column);
+      nextParams.set("order", "asc");
+    } else {
+      nextParams.set("order", order === "asc" ? "desc" : "asc");
+    }
+
+    nextParams.set("page", "1");
+    setSearchParams(nextParams);
+  }
 
 
   return (
@@ -203,7 +218,10 @@ function StudentsPage() {
           <p>Error: {error}</p>
         ) : (
         <StudentsList 
-            students={students} 
+            students={students}
+            sort={sort}
+            order={order}
+            onSort={handleSort} 
             onView={handleView}
             onDelete={handleDelete} 
             onEdit={(student) => {

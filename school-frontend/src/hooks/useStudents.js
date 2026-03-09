@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const API_URL = "http://localhost:5000";
 
-export default function useStudents({page, limit, q, grade, className, gender}) {
+export default function useStudents({page, limit, q, grade, className, gender, sort, order}) {
     const [students, setStudents] = useState([]);
     const [pagination, setPagination]= useState(null);
     const [loading, setLoading] = useState(true);
@@ -23,6 +23,8 @@ export default function useStudents({page, limit, q, grade, className, gender}) 
                 const params = new URLSearchParams();
                 params.set("page", String(page));
                 params.set("limit", String(limit));
+                params.set("sort", sort);
+                params.set("order", order);
                 if(q) {
                     params.set('q', q);
                 }
@@ -60,7 +62,7 @@ export default function useStudents({page, limit, q, grade, className, gender}) 
         return () => {
             cancelled = true;
         };
-    }, [page, limit, q, grade, className, gender, refreshKey]);
+    }, [page, limit, q, grade, className, gender, sort, order, refreshKey]);
 
     const refetch = () => setRefreshKey((k) => k+1);
         
