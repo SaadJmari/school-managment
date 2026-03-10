@@ -76,42 +76,52 @@ body {
 }
 
 .students-page__filters {
-  display: flex;
-  gap: 1rem;
+    display: flex;
+    gap: 1rem;
 }
 
 .students-page__filters input {
-  width: 100%;
-  max-width: 320px;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #111827;
-  font-size: 0.95rem;
+    width: 100%;
+    max-width: 320px;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 0.95rem;
 }
 
 .students-page__filters input:focus {
-  outline: none;
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+    outline: none;
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
 }
 
 .students-page__filters select {
-  width: 100%;
-  max-width: 180px;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #111827;
-  font-size: 0.95rem;
+    width: 100%;
+    max-width: 180px;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 0.95rem;
 }
 
 .students-page__filters select:focus {
-  outline: none;
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+    outline: none;
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+}
+
+.students-page__clear-btn {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-left: 8px;
+    cursor: pointer;
 }
 
 @media(max-width: 600px) {

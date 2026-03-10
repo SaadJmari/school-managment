@@ -124,6 +124,17 @@ function StudentsPage() {
     setSearchParams(nextParams);
   }
 
+  const hasActiveFilters = q || grade || className || gender;
+
+  function handleClearFilters() {
+    updateSearchParams({
+      q: "",
+      grade: "",
+      class: "",
+      gender: "",
+      page: 1,
+    })
+  }
 
   return (
     <div className="students-page">
@@ -192,6 +203,15 @@ function StudentsPage() {
             </option>
           ))}
         </select>
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleClearFilters}
+            className="students-page__clr-btn"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
       {deleteError && <p className="students-page__error">Delete failed: {deleteError}</p>}
